@@ -16,24 +16,20 @@ function createModal() {
   modal.id = 'randomModal';
   modal.innerHTML = `
     <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button class="modal__close" type="button" aria-label="Закрыть">&times;</button>
-      <p class="modal__title" id="modalTitle">Случайная задача</p>
+      <button class="modal__close" type="button" aria-label="Закрыть">×</button>
+      <p class="modal__title" id="modalTitle">СЛУЧАЙНАЯ ЗАДАЧА</p>
       <p class="modal__text" id="modalText"></p>
       <div class="modal__meta">
         <span class="badge" id="modalStatus"></span>
-        <span class="badge" id="modalUser"></span>
+        <span class="modal__user" id="modalUser"></span>
       </div>
-    </div>
-  `;
+    </div>`;
   document.body.appendChild(modal);
 
-  // крестик
   modal.querySelector('.modal__close').addEventListener('click', closeRandomModal);
-  // клик по тёмному фону (но не по самому окну)
   modal.addEventListener('click', function (e) {
     if (e.target === modal) closeRandomModal();
   });
-  // клавиша Esc
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeRandomModal();
   });
@@ -47,6 +43,7 @@ function showRandomTodo() {
   const btn = document.getElementById('randomBtn');
   btn.disabled = true;
 
+  // каждый клик — новый запрос
   axios.get('https://dummyjson.com/todos/random')
     .then(function (response) {
       const task = response.data;

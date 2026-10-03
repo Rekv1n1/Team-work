@@ -1,154 +1,119 @@
-const state = {
-  filter: 'all',   // all | active | completed
-  query: ''
-};
- 
+const plannerState = { filter: 'all', search: '' };
+
 // ===== Фильтрация: вкладка + поиск через одну функцию =====
-function getFilteredTodos() {
+function getVisibleTasks() {
   let result = todos;
- 
-  if (state.filter === 'active') {
+
+  if (plannerState.filter === 'active') {
     result = result.filter(t => t.completed === false);
   }
-  if (state.filter === 'completed') {
+  if (plannerState.filter === 'done') {
     result = result.filter(t => t.completed === true);
   }
-  if (state.query !== '') {
+  if (plannerState.search !== '') {
     result = result.filter(t =>
-      t.todo.toLowerCase().includes(state.query.toLowerCase())
+      t.todo.toLowerCase().includes(plannerState.search.toLowerCase())
     );
   }
- 
+
   return result;
 }
 
-function escapeHtml(text) {
-  return text
+function escapeHtml(value) {
+  return String(value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+
 // ===== Список =====
-function renderList(items) {
+function renderList(list) {
   let html = '';
- 
-  for (let i = 0; i < items.length; i++) {
-    const task = items[i];
+
+  for (let i = 0; i < list.length; i++) {
+    const task = list[i];
     html = html + `
-      <div class="task ${task.completed ? 'done' : ''}"
-           onclick="toggleTodo(${task.id})">
-        <span class="check"></span>
-        <p>${escapeHtml(task.todo)}</p>
-        <span class="user">User ${task.userId}</span>
-        <button class="remove" type="button" aria-label="Удалить"
-                onclick="removeTodo(event, ${task.id})">&times;</button>
-      </div>
-    `;
+      <article class="task-row ${task.completed ? 'done' : ''}" onclick="toggleTodo(${task.id})">
+        <span class="task-check" aria-hidden="true">${task.completed ? '✓' : ''}</span>
+        <p class="task-text" title="${escapeHtml(task.todo)}">${escapeHtml(task.todo)}</p>
+        <span class="task-user">User ${task.userId}</span>
+      </article>`;
   }
- 
-  if (items.length === 0) {
-    html = '<div class="empty">Ничего не найдено</div>';
+
+  if (list.length === 0) {
+    html = '<div class="task-row"><p class="task-text">Ничего не найдено</p></div>';
   }
- 
-  document.getElementById('list').innerHTML = html;
-  document.getElementById('shown').textContent =
-    'Показано ' + items.length + ' из ' + todos.length;
+
+  document.getElementById('taskList').innerHTML = html;
+  document.getElementById('taskFooter').textContent =
+    'Показано ' + list.length + ' из ' + todos.length;
 }
- 
+
 // ===== Счётчики вкладок =====
-function updateCounters() {
+function getDoneCount() {
   let done = 0;
   for (let i = 0; i < todos.length; i++) {
     if (todos[i].completed) done = done + 1;
   }
- 
-  document.getElementById('countAll').textContent = todos.length;
-  document.getElementById('countActive').textContent = todos.length - done;
-  document.getElementById('countCompleted').textContent = done;
+  return done;
 }
- 
+
+function updateCounters() {
+  const total = todos.length;
+  const done = getDoneCount();
+
+  document.querySelector('[data-filter="all"]').textContent = 'Все (' + total + ')';
+  document.querySelector('[data-filter="active"]').textContent = 'Активные (' + (total - done) + ')';
+  document.querySelector('[data-filter="done"]').textContent = 'Выполненные (' + done + ')';
+}
+
 // ===== Прогресс-бар =====
 function updateProgress() {
-  let done = 0;
-  for (let i = 0; i < todos.length; i++) {
-    if (todos[i].completed) done = done + 1;
-  }
- 
-  const percent = todos.length === 0 ? 0 : Math.round(done / todos.length * 100);
- 
+  const total = todos.length;
+  const done = getDoneCount();
+  const percent = total === 0 ? 0 : Math.round(done / total * 100);
+
+  document.getElementById('progressPercent').textContent = percent + '%';
+  document.getElementById('progressCount').textContent = '(' + done + ' из ' + total + ')';
   document.getElementById('progressFill').style.width = percent + '%';
-  document.getElementById('progressText').textContent =
-    'Выполнено ' + percent + '% (' + done + ' из ' + todos.length + ')';
 }
- 
-function render() {
-  renderList(getFilteredTodos());
+
+function renderPlanner() {
+  renderList(getVisibleTasks());
   updateCounters();
   updateProgress();
 }
- 
-// ===== Действия =====
+
+// ===== Клик по задаче =====
+// Данные меняются только в памяти браузера: DummyJSON ничего не сохраняет.
 function toggleTodo(id) {
   const task = todos.find(t => t.id === id);
   task.completed = !task.completed;
-  render();
+  renderPlanner();
 }
- 
-function removeTodo(event, id) {
-  event.stopPropagation(); // чтобы клик по × не отмечал задачу
-  todos = todos.filter(t => t.id !== id);
-  render();
-}
- 
-function addTodo() {
-  const input = document.getElementById('addInput');
-  const text = input.value.trim();
-  if (text === '') return;
- 
-  todos.unshift({
-    id: Date.now(),
-    todo: text,
-    completed: false,
-    userId: 1
-  });
- 
-  input.value = '';
-  render();
-}
- 
+
 // ===== Обработчики =====
-document.getElementById('tabs').addEventListener('click', function (e) {
-  const tab = e.target.closest('.tab');
-  if (!tab) return;
- 
-  state.filter = tab.dataset.filter;
- 
-  const tabs = document.querySelectorAll('.tab');
-  for (let i = 0; i < tabs.length; i++) {
-    tabs[i].classList.toggle('active', tabs[i] === tab);
-  }
- 
-  render();
+document.querySelectorAll('.filter').forEach(button => {
+  button.addEventListener('click', () => {
+    plannerState.filter = button.dataset.filter;
+    document.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b === button));
+    renderPlanner();
+  });
 });
- 
-document.getElementById('searchInput').addEventListener('input', function (e) {
-  state.query = e.target.value.trim();
-  render();
+
+document.getElementById('searchInput').addEventListener('input', event => {
+  plannerState.search = event.target.value.trim();
+  renderPlanner();
 });
- 
-document.getElementById('addBtn').addEventListener('click', addTodo);
-document.getElementById('addInput').addEventListener('keydown', function (e) {
-  if (e.key === 'Enter') addTodo();
-});
- 
+
 // ===== Старт =====
 loadTodos()
   .then(function () {
-    render();
+    renderPlanner();
   })
   .catch(function () {
-    document.getElementById('list').innerHTML =
-      '<div class="empty">Не удалось загрузить задачи. Обновите страницу.</div>';
-    document.getElementById('progressText').textContent = 'Ошибка загрузки';
+    document.getElementById('taskList').innerHTML =
+      '<div class="task-row"><p class="task-text">Не удалось загрузить задачи. Обновите страницу.</p></div>';
+    document.getElementById('progressCount').textContent = '(ошибка загрузки)';
   });
