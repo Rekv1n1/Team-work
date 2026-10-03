@@ -1,14 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./css/common.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Планировщик — Task Planner</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/planner.css">
 </head>
 <body>
-    
+  <header class="header">
+    <div class="header__inner">
+      <a class="logo" href="index.html">Task Planner</a>
+      <nav class="nav">
+        <a class="nav__link active" href="index.html">Планировщик</a>
+        <a class="nav__link" href="stats.html">Статистика</a>
+      </nav>
+      <button class="btn" id="randomBtn" type="button">🎲 Случайная задача</button>
+    </div>
+  </header>
 
-    <script src="./js/common.js"></script>
+  <main class="container planner">
+    <section class="progress-card">
+      <div class="progress-card__title">
+        Выполнено <strong id="progressPercent">0%</strong>
+        <span id="progressCount">(0 из 0)</span>
+      </div>
+      <div class="progress">
+        <div class="progress__fill" id="progressFill"></div>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div class="filters">
+        <button class="filter active" type="button" data-filter="all">Все</button>
+        <button class="filter" type="button" data-filter="active">Активные</button>
+        <button class="filter" type="button" data-filter="done">Выполненные</button>
+      </div>
+      <label class="search">
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" placeholder="Поиск задач...">
+      </label>
+    </div>
+
+    <section class="task-list" id="taskList"></section>
+    <p class="task-footer" id="taskFooter"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/planner.js"></script>
 </body>
 </html>
