@@ -8,7 +8,57 @@
 </head>
 <body>
     
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Планировщик — Task Planner</title>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/planner.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header__inner">
+      <a class="logo" href="index.html">Task Planner</a>
+      <nav class="nav">
+        <a class="nav__link active" href="index.html">Планировщик</a>
+        <a class="nav__link" href="stats.html">Статистика</a>
+      </nav>
+      <button class="btn" id="randomBtn" type="button">🎲 Случайная задача</button>
+    </div>
+  </header>
 
+  <main class="container">
+    <section class="progress">
+      <p class="progress__text" id="progressText">Загрузка…</p>
+      <div class="progress__track">
+        <div class="progress__fill" id="progressFill" style="width: 0%"></div>
+      </div>
+    </section>
+
+    <div class="add">
+      <input class="add__input" id="addInput" type="text" placeholder="Новая задача" maxlength="120">
+      <button class="btn" id="addBtn" type="button">Добавить</button>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" type="button" data-filter="all">Все <span id="countAll">0</span></button>
+      <button class="tab" type="button" data-filter="active">Активные <span id="countActive">0</span></button>
+      <button class="tab" type="button" data-filter="completed">Выполненные <span id="countCompleted">0</span></button>
+    </div>
+
+    <input class="search" id="searchInput" type="search" placeholder="Поиск по задачам">
+
+    <div class="list" id="list"></div>
+    <p class="shown" id="shown"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/planner.js"></script>
+</body>
+</html>
     <script src="./js/common.js"></script>
 </body>
 </html>
