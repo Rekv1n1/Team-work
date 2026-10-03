@@ -1,0 +1,208 @@
+/* ---------- Карточки-метрики ---------- */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.card {
+  min-height: 148px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid #eceef4;
+  border-radius: 13px;
+  box-shadow: var(--shadow);
+}
+
+.card__icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 13px;
+  border-radius: 10px;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.card__icon--total { background: #eef0ff; color: #5546e8; }
+.card__icon--done { background: #dcf8e8; color: #15934f; }
+.card__icon--active { background: #fff1c9; color: #ca7900; }
+.card__icon--percent { background: #fde8f4; color: #d52a70; }
+
+.card__value {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.05;
+  letter-spacing: -.7px;
+  font-weight: 800;
+}
+
+.card__label {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---------- Рейтинг ---------- */
+.ranking {
+  padding: 16px 8px 13px;
+  background: var(--surface);
+  border: 1px solid #eceef4;
+  border-radius: 13px;
+  box-shadow: var(--shadow);
+}
+
+.ranking__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 12px 9px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 800;
+  letter-spacing: -.15px;
+}
+
+.sort { display: none; }
+
+.rating {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.rating__row {
+  min-height: 39px;
+  display: grid;
+  grid-template-columns: 28px 114px minmax(120px, 1fr) 104px;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.rating__row:hover { background: #fafaff; }
+.rating__row.selected { background: #eef0ff; border-color: #cbd0ff; }
+
+.rating__place {
+  color: #8f96aa;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rating__row.selected .rating__place { color: #5546e8; }
+
+.rating__user {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.rating__count {
+  text-align: right;
+  color: #9299ad;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.bar {
+  height: 8px;
+  background: #eceef5;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5145e8 0%, #8b3ff0 100%);
+  border-radius: inherit;
+}
+
+.rating__row:focus-visible { outline: 3px solid rgba(85, 70, 232, .24); outline-offset: 1px; }
+
+/* ---------- Задачи выбранного пользователя ---------- */
+.user-tasks {
+  margin-top: 18px;
+  background: var(--surface);
+  border: 1px solid #eceef4;
+  border-radius: 13px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.user-tasks__head {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  min-height: 40px;
+  padding: 14px 20px 7px;
+}
+
+.user-tasks__count { color: #a2a7b8; font-weight: 500; }
+
+.utask {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 20px;
+  border-top: 1px solid var(--line);
+}
+
+.utask__check {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #d3d8e7;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.utask.done .utask__check {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.utask p {
+  min-width: 0;
+  margin: 0;
+  flex: 1;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.utask.done p { color: #b4b9c9; text-decoration: line-through; }
+
+.utask .badge { margin-left: auto; }
+
+@media (max-width: 760px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rating__row { grid-template-columns: 26px 90px minmax(90px, 1fr) 86px; }
+}
+
+@media (max-width: 520px) {
+  .card { min-height: 132px; padding: 16px; }
+  .card__value { font-size: 27px; }
+  .card__icon { width: 36px; height: 36px; margin-bottom: 10px; }
+  .rating__row { grid-template-columns: 24px 80px minmax(50px, 1fr); gap: 7px; }
+  .rating__count { grid-column: 3; font-size: 11px; }
+  .rating__row .bar { grid-column: 2 / 4; grid-row: 2; }
+  .utask { padding-inline: 14px; }
+  .utask p { font-size: 13px; }
+  .utask .badge { font-size: 11px; padding-inline: 8px; }
+}
